@@ -1,0 +1,29 @@
+FROM bitwalker/alpine-elixir-phoenix:1.13.1
+
+WORKDIR /app
+
+# mix.lock 
+COPY mix.exs ./ 
+COPY config config
+RUN mix deps.get
+# RUN MIX_ENV=test mix do deps.get, deps.compile
+# RUN MIX_ENV=prod mix deps.compile
+RUN MIX_ENV=dev mix deps.compile
+
+COPY assets assets
+COPY priv priv
+COPY lib lib
+COPY test test
+
+RUN mix compile
+
+# build release
+# at this point we should copy the rel directory but
+# we are not using it so we can omit it
+# COPY rel rel
+# RUN mix release
+
+COPY README.md run.sh ./
+RUN chmod +x ./run.sh
+
+CMD ["./run.sh"]

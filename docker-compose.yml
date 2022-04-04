@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Workspace
+    command: /bin/sh run.sh
+    ports: 
+      - "4000:4000"
+    depends_on: 
+      - database
+    links:
+      - database
+
+  database:
+    image: "postgres:14"
+    restart: always
+    environment: 
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports: 
+      - "5432"
